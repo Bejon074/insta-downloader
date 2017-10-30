@@ -25,4 +25,7 @@ public class UserDetail {
 
     @Column
     private int totalFileDownloaded;
+
+    @Column
+    private String fileSavingDirectory;
 }

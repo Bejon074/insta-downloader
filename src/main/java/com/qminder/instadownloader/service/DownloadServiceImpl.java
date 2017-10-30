@@ -40,6 +40,29 @@ public class DownloadServiceImpl implements DownloadService {
         String maxId = savedUserDetail == null ? "" : savedUserDetail.getLastDownloadedFileId();
         log.info("maxId, {}", maxId );
         Path path = pathResolverService.getPath(directory, userName);
+        startDownload(userName, maxId, path, directory, savedUserDetail);
+    }
+
+    private void saveOrUpdateUserDetail(UserDetail savedUserDetail,
+                                        Account account,
+                                        String maxId,
+                                        int totalCounter,
+                                        String fileSavingDirectory){
+        UserDetail userDetail = savedUserDetail == null ? new UserDetail() : savedUserDetail;
+        userDetail.setTotalFileDownloaded(userDetail.getTotalFileDownloaded() + totalCounter);
+        userDetail.setFullName(account.fullName);
+        userDetail.setLastDownloadedFileId(maxId);
+        userDetail.setUserName(account.username);
+        userDetail.setFileSavingDirectory(fileSavingDirectory);
+        userRepository.saveAndFlush(userDetail);
+    }
+
+    @Override
+    public void startDownload(String userName,
+                              String maxId,
+                              Path path,
+                              String directory,
+                              UserDetail savedUserDetail) {
         Account account = new Account();
         int totalCounter = 0;
         try {
@@ -49,7 +72,8 @@ public class DownloadServiceImpl implements DownloadService {
                 for (Media media : medias) {
                     if (media.type.equals(MediaType.IMAGE.getValue())) {
                         try (InputStream in = new URL(media.imageUrls.high).openStream()) {
-                            Files.copy(in, Paths.get(path + "\\" + media.imageUrls.high.substring(media.imageUrls.high.lastIndexOf('/'))));
+                            Files.copy(in, Paths.get(path + "\\" + media.imageUrls.high
+                                    .substring(media.imageUrls.high.lastIndexOf('/'))));
                         } catch (FileAlreadyExistsException ex) {
                             log.info("file already exits with id: {}", media.id);
                             totalCounter--;
@@ -59,21 +83,12 @@ public class DownloadServiceImpl implements DownloadService {
                 }
                 maxId = medias.size() == 0 ? maxId : medias.get(medias.size() - 1).id;
             }
-            saveOrUpdateUserDetail(savedUserDetail, account, maxId, totalCounter);
+            saveOrUpdateUserDetail(savedUserDetail, account, maxId, totalCounter, directory);
         } catch (Exception ex) {
             if (!maxId.isEmpty() && account.username != null) {
-                saveOrUpdateUserDetail(savedUserDetail, account, maxId, totalCounter);
+                saveOrUpdateUserDetail(savedUserDetail, account, maxId, totalCounter, directory);
             }
             log.error("error {}", ex);
         }
-    }
-
-    private void saveOrUpdateUserDetail(UserDetail savedUserDetail, Account account, String maxId, int totalCounter){
-        UserDetail userDetail = savedUserDetail == null ? new UserDetail() : savedUserDetail;
-        userDetail.setTotalFileDownloaded(userDetail.getTotalFileDownloaded() + totalCounter);
-        userDetail.setFullName(account.fullName);
-        userDetail.setLastDownloadedFileId(maxId);
-        userDetail.setUserName(account.username);
-        userRepository.saveAndFlush(userDetail);
     }
 }
