@@ -37,15 +37,15 @@ public class DownloadServiceImpl implements DownloadService {
     @Override
     public void startNewDownload(String userName, String directory) {
         UserDetail savedUserDetail = userRepository.findUserDetailByUserName(userName);
-        String maxID = savedUserDetail == null ? "" : savedUserDetail.getLastDownloadedFileId();
-        log.info("maxID, {}", maxID );
+        String maxId = savedUserDetail == null ? "" : savedUserDetail.getLastDownloadedFileId();
+        log.info("maxId, {}", maxId );
         Path path = pathResolverService.getPath(directory, userName);
         Account account = new Account();
         int totalCounter = 0;
         try {
             account = instagram.getAccountByUsername(userName);
             for (int i = 0; i < account.mediaCount / Constants.downloadChunkSize + 1; i++) {
-                List<Media> medias = instagram.getMedias(userName, Constants.downloadChunkSize, maxID);
+                List<Media> medias = instagram.getMedias(userName, Constants.downloadChunkSize, maxId);
                 for (Media media : medias) {
                     if (media.type.equals(MediaType.IMAGE.getValue())) {
                         try (InputStream in = new URL(media.imageUrls.high).openStream()) {
@@ -57,12 +57,12 @@ public class DownloadServiceImpl implements DownloadService {
                         totalCounter++;
                     }
                 }
-                maxID = medias.size() == 0 ? maxID : medias.get(medias.size() - 1).id;
+                maxId = medias.size() == 0 ? maxId : medias.get(medias.size() - 1).id;
             }
-            saveOrUpdateUserDetail(savedUserDetail, account, maxID, totalCounter);
+            saveOrUpdateUserDetail(savedUserDetail, account, maxId, totalCounter);
         } catch (Exception ex) {
-            if (!maxID.isEmpty() && account.username != null) {
-                saveOrUpdateUserDetail(savedUserDetail, account, maxID, totalCounter);
+            if (!maxId.isEmpty() && account.username != null) {
+                saveOrUpdateUserDetail(savedUserDetail, account, maxId, totalCounter);
             }
             log.error("error {}", ex);
         }
