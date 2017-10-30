@@ -33,7 +33,6 @@ public class DownloadServiceImpl implements DownloadService {
     @Autowired
     private UserRepository userRepository;
 
-    @Async
     @Override
     public void startNewDownload(String userName, String directory) {
         UserDetail savedUserDetail = userRepository.findUserDetailByUserName(userName);
@@ -57,6 +56,7 @@ public class DownloadServiceImpl implements DownloadService {
         userRepository.saveAndFlush(userDetail);
     }
 
+    @Async("threadPoolTaskExecutor")
     @Override
     public void startDownload(String userName,
                               String maxId,

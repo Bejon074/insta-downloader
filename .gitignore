@@ -4,6 +4,7 @@
 /gradle/
 gradlew
 gradlew.bat
+/h2/
 !gradle/wrapper/gradle-wrapper.jar
 
 ### STS ###

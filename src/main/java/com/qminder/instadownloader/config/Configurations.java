@@ -16,7 +16,7 @@ public class Configurations {
         return new Instagram(new OkHttpClient());
     }
 
-    @Bean
+    @Bean(name = "threadPoolTaskExecutor")
     public Executor asyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(10);
