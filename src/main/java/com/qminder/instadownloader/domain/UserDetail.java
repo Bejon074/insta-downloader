@@ -3,6 +3,7 @@ package com.qminder.instadownloader.domain;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.Constraint;
 
 @Data
 @Entity
@@ -13,7 +14,7 @@ public class UserDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(unique = true)
     private String userName;
 
     @Column
@@ -23,5 +24,5 @@ public class UserDetail {
     private String lastDownloadedFileId;
 
     @Column
-    private Long totalFileDownloaded;
+    private int totalFileDownloaded;
 }
