@@ -28,7 +28,7 @@ public class PathResolverServiceImpl implements PathResolverService {
 
     @Override
     public Path getPath(String directory, String userName) {
-        Path path = Paths.get(directory+"\\"+userName);
+        Path path = Paths.get(directory + "\\" + userName);
         if (!Files.exists(path)) {
             try {
                 Files.createDirectories(path);

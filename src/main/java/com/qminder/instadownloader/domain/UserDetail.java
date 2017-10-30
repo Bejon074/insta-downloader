@@ -3,7 +3,6 @@ package com.qminder.instadownloader.domain;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.Constraint;
 
 @Data
 @Entity

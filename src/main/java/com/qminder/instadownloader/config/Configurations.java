@@ -1,18 +1,20 @@
 package com.qminder.instadownloader.config;
 
-import okhttp3.OkHttpClient;
 import me.postaddict.instagram.scraper.Instagram;
+import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.Executor;
 
+@EnableAsync
 @Configuration
 public class Configurations {
 
     @Bean
-    public Instagram getInstagram(){
+    public Instagram getInstagram() {
         return new Instagram(new OkHttpClient());
     }
 
