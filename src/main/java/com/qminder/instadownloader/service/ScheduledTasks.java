@@ -32,7 +32,7 @@ public class ScheduledTasks {
         for (UserDetail userDetail : userDetails) {
             log.info("scheduler starts for user: {}", userDetail.getUserName());
             Account account = instagram.getAccountByUsername(userDetail.getUserName());
-            downloadService.startDownload(account, userDetail.getFileSavingDirectory(), userDetail);
+            downloadService.startDownload(account, userDetail.getFileSavingDirectory(), userDetail, false);
         }
     }
 }

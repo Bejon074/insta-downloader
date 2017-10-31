@@ -68,15 +68,17 @@
         <thead>
         <th style="display: table-cell;">userName</th>
         <th style="display: table-cell;">full name</th>
-        <th style="display: table-cell;">total download count</th>
         <th style="display: table-cell;">Saving Directory</th>
+        <th style="display: table-cell;">Lastest UpLoad Time</th>
+        <th style="display: table-cell;">Total Downloaded Images</th>
         </thead>
         <tbody>
         <tr th:each="usedDetail: ${userDetails}">
             <td th:text="${usedDetail.userName}"/>
             <td th:text="${usedDetail.fullName}"/>
-            <td th:text="${usedDetail.totalFileDownloaded}"/>
             <td th:text="${usedDetail.fileSavingDirectory}"/>
+            <td th:text="${usedDetail.uploadTime}"/>
+            <td th:text="${usedDetail.totalFileDownloaded}"/>
         </tr>
         </tbody>
     </table>

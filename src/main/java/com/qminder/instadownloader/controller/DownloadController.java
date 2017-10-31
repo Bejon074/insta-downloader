@@ -45,7 +45,7 @@ public class DownloadController {
             try {
                 account = instagram.getAccountByUsername(downloadRequest.getUserName());
                 UserDetail userDetail = profileService.getUserDetailByName(downloadRequest.getUserName());
-                downloadService.startDownload(account, downloadRequest.getDirectory(), userDetail);
+                downloadService.startDownload(account, downloadRequest.getDirectory(), userDetail, true);
                 modelAndView.addObject("successMsg", ReturnedMassage.NewDownloadSuccess);
             } catch (Exception ex) {
                 modelAndView.addObject("errorMsg", ReturnedMassage.NoAccountFound);
