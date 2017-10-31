@@ -1,4 +1,4 @@
-package com.qminder.instadownloader.controller.model;
+package com.qminder.instadownloader.model;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.NotEmpty;

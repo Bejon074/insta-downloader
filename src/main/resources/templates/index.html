@@ -63,7 +63,7 @@
 
 </div>
 <div class="container" th:if="${userDetails.size() > 0}">
-    <h2>active realTime profile to download</h2>
+    <h2>active realTime profiles</h2>
     <table class="table" border="1">
         <thead>
         <th style="display: table-cell;">userName</th>
@@ -82,7 +82,7 @@
     </table>
 </div>
 <div class="alert alert-warning" th:unless="${userDetails.size() > 0}">
-    <h2>No active realTime profile to download</h2>
+    <h2>No active realTime profile</h2>
 </div>
 
 </body>

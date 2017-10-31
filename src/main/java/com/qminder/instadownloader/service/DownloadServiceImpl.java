@@ -36,14 +36,13 @@ public class DownloadServiceImpl implements DownloadService {
 
     @Async("threadPoolTaskExecutor")
     @Override
-    @Transactional
     public void startDownload(Account account, String directory, UserDetail savedUserDetail) {
         String maxId = savedUserDetail == null ? "" : savedUserDetail.getLastDownloadedFileId();
         Path path = pathResolverService.getPath(directory, account.username);
-        int totalCounter = 0;
         try {
             for (int i = 0; i < account.mediaCount / Constants.downloadChunkSize + 1; i++) {
                 List<Media> medias = instagram.getMedias(account.username, Constants.downloadChunkSize, maxId);
+                int imageCounter = 0;
                 for (Media media : medias) {
                     if (media.type.equals(MediaType.IMAGE.getValue())) {
                         try (InputStream in = new URL(media.imageUrls.high).openStream()) {
@@ -51,33 +50,34 @@ public class DownloadServiceImpl implements DownloadService {
                                     .substring(media.imageUrls.high.lastIndexOf('/'))));
                         } catch (FileAlreadyExistsException ex) {
                             log.info("file already exits with id: {}", media.id);
-                            totalCounter--;
+                            imageCounter--;
                         }
-                        totalCounter++;
+                        imageCounter++;
                     }
                 }
                 maxId = medias.size() == 0 ? maxId : medias.get(medias.size() - 1).id;
-                saveOrUpdateUserDetail(savedUserDetail, account, maxId, totalCounter, directory);
+                savedUserDetail = saveOrUpdateUserDetail(savedUserDetail, account, maxId, imageCounter, directory);
             }
         } catch (Exception ex) {
             if (!maxId.isEmpty() && account.username != null) {
-                saveOrUpdateUserDetail(savedUserDetail, account, maxId, totalCounter, directory);
+                saveOrUpdateUserDetail(savedUserDetail, account, maxId, 0, directory);
             }
             log.error("error {}", ex);
         }
     }
 
-    private void saveOrUpdateUserDetail(UserDetail savedUserDetail,
+    private UserDetail saveOrUpdateUserDetail(UserDetail savedUserDetail,
                                         Account account,
                                         String maxId,
-                                        int totalCounter,
+                                        int imageCounter,
                                         String fileSavingDirectory) {
         UserDetail userDetail = savedUserDetail == null ? new UserDetail() : savedUserDetail;
-        userDetail.setTotalFileDownloaded(userDetail.getTotalFileDownloaded() + totalCounter);
+        userDetail.setTotalFileDownloaded(userDetail.getTotalFileDownloaded() + imageCounter);
         userDetail.setFullName(account.fullName);
         userDetail.setLastDownloadedFileId(maxId);
         userDetail.setUserName(account.username);
         userDetail.setFileSavingDirectory(fileSavingDirectory);
-        profileService.saveUserDetail(userDetail);
+        log.info("saving userDetail: {}", userDetail);
+        return profileService.saveUserDetail(userDetail);
     }
 }

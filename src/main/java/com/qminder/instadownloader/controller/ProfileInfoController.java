@@ -1,6 +1,6 @@
 package com.qminder.instadownloader.controller;
 
-import com.qminder.instadownloader.controller.model.DownloadRequest;
+import com.qminder.instadownloader.model.DownloadRequest;
 import com.qminder.instadownloader.domain.UserDetail;
 import com.qminder.instadownloader.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
