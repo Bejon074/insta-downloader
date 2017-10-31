@@ -40,12 +40,15 @@ public class DownloadServiceImpl implements DownloadService {
         String maxId = savedUserDetail == null ? "" : savedUserDetail.getLastDownloadedFileId();
         Path path = pathResolverService.getPath(directory, account.username);
         try {
-            if (!isNewDownload) {
-                processSchedulerDownload(savedUserDetail, path, maxId, account);
-            }
             Media latestMediaDownloaded = new Media();
             for (int i = 0; i < account.mediaCount / Constants.downloadChunkSize + 1; i++) {
-                List<Media> medias = instagram.getMedias(account.username, Constants.downloadChunkSize, maxId);
+                List<Media> medias;
+                if(isNewDownload) {
+                    medias = instagram.getMedias(account.username, Constants.downloadChunkSize, maxId);
+                }else{
+                    medias = instagram.getMedias(account.username, Constants.schedulerChunkSize);
+                    isNewDownload = true;
+                }
                 int imageCounter = 0;
                 for (Media media : medias) {
                     if (media.type.equals(MediaType.IMAGE.getValue())) {
@@ -66,7 +69,7 @@ public class DownloadServiceImpl implements DownloadService {
                 savedUserDetail = saveOrUpdateUserDetail(savedUserDetail, account, maxId, imageCounter, directory, new Date(latestMediaDownloaded.createdTime));
             }
         } catch (Exception ex) {
-            if (!maxId.isEmpty() && account.username != null) {
+            if (!maxId.isEmpty() && account.username != null && savedUserDetail != null) {
                 saveOrUpdateUserDetail(savedUserDetail, account, maxId, 0, directory, new Date());
             }
             log.error("error {}", ex);
@@ -88,29 +91,5 @@ public class DownloadServiceImpl implements DownloadService {
         userDetail.setUploadTime(uploadTime);
         log.info("saving userDetail: {}", userDetail);
         return profileService.saveUserDetail(userDetail);
-    }
-
-    private void processSchedulerDownload(UserDetail userDetail, Path path, String maxId, Account account) throws IOException {
-        List<Media> medias = instagram.getMedias(userDetail.getUserName(), Constants.downloadChunkSize);
-        int imageCounter = 0;
-        Media latestMediaDownloaded = new Media();
-        for (Media media : medias) {
-            if (media.type.equals(MediaType.IMAGE.getValue())) {
-                try (InputStream in = new URL(media.imageUrls.high).openStream()) {
-                    if (latestMediaDownloaded.createdTime < media.createdTime && userDetail.getUploadTime().getTime() < media.createdTime) {
-                        latestMediaDownloaded = media;
-                        Files.copy(in, Paths.get(path + "\\" + media.imageUrls.high
-                                .substring(media.imageUrls.high.lastIndexOf('/'))));
-                    }
-                } catch (FileAlreadyExistsException ex) {
-                    log.info("file already exits with id: {}", media.id);
-                    imageCounter--;
-                }
-                imageCounter++;
-            }
-        }
-        maxId = medias.size() == 0 ? maxId : medias.get(medias.size() - 1).id;
-        if (latestMediaDownloaded.createdTime != 0)
-            saveOrUpdateUserDetail(userDetail, account, maxId, imageCounter, userDetail.getFileSavingDirectory(), new Date(latestMediaDownloaded.createdTime));
     }
 }
