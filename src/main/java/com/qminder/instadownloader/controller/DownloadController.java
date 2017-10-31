@@ -1,9 +1,9 @@
 package com.qminder.instadownloader.controller;
 
 
-import com.qminder.instadownloader.model.DownloadRequest;
 import com.qminder.instadownloader.domain.UserDetail;
 import com.qminder.instadownloader.helper.ReturnedMassage;
+import com.qminder.instadownloader.model.DownloadRequest;
 import com.qminder.instadownloader.service.DownloadService;
 import com.qminder.instadownloader.service.PathResolverService;
 import com.qminder.instadownloader.service.ProfileService;

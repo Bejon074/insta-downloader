@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-
-import javax.transaction.Transactional;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.FileAlreadyExistsException;
@@ -67,10 +65,10 @@ public class DownloadServiceImpl implements DownloadService {
     }
 
     private UserDetail saveOrUpdateUserDetail(UserDetail savedUserDetail,
-                                        Account account,
-                                        String maxId,
-                                        int imageCounter,
-                                        String fileSavingDirectory) {
+                                              Account account,
+                                              String maxId,
+                                              int imageCounter,
+                                              String fileSavingDirectory) {
         UserDetail userDetail = savedUserDetail == null ? new UserDetail() : savedUserDetail;
         userDetail.setTotalFileDownloaded(userDetail.getTotalFileDownloaded() + imageCounter);
         userDetail.setFullName(account.fullName);
