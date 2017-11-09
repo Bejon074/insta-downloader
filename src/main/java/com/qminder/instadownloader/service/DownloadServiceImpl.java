@@ -66,8 +66,6 @@ public class DownloadServiceImpl implements DownloadService {
                     }
                 }
                 if (hasNext(instagramResponse)) {
-                    realTimeUserDetail = saveUserDetails(realTimeUserDetail, username, instagramResponse.getUser().getFull_name(),
-                            maxId, directory, DownloadType.REALTIME_AND_PREVIOUS_ALL);
                     url = pathResolverService.getUserMediaUrl(username, maxId);
                     instagramResponse = restTemplate.getForObject(url, InstagramResponse.class);
                 } else {
@@ -130,6 +128,7 @@ public class DownloadServiceImpl implements DownloadService {
             while (instagramResponse != null &&
                     instagramResponse.getUser() != null &&
                     instagramResponse.getUser().getMedia() != null) {
+                boolean isUptoDate = false;
                 for (MediaNode mediaNode : instagramResponse.getUser().getMedia().getNodes()) {
                     if (!mediaNode.is_video()) {
                         try (InputStream in = new URL(mediaNode.getDisplay_src()).openStream()) {
@@ -138,9 +137,14 @@ public class DownloadServiceImpl implements DownloadService {
                                     .substring(mediaNode.getDisplay_src().lastIndexOf('/'))));
                             maxId = mediaNode.getId();
                         } catch (FileAlreadyExistsException ex) {
+                            isUptoDate = true;
                             break;
                         }
                     }
+                }
+                if(isUptoDate){
+                    log.info("{} is upto date", realTimeUserDetail.getUserName());
+                    break;
                 }
                 if (hasNext(instagramResponse)) {
                     url = pathResolverService.getUserMediaUrl(realTimeUserDetail.getUserName(), maxId);
@@ -150,9 +154,7 @@ public class DownloadServiceImpl implements DownloadService {
                 }
             }
         } catch (Exception ex) {
-            log.info("saving user details");
-            saveUserDetails(realTimeUserDetail, realTimeUserDetail.getUserName(), realTimeUserDetail.getFullName(), 
-                    maxId, realTimeUserDetail.getFileSavingDirectory(), DownloadType.REALTIME_AND_PREVIOUS_ALL);
+            log.warn("<<<<<<<< RealTime download interrupted >>>>>>>");
             log.error("error {}", ex);
         }
     }
