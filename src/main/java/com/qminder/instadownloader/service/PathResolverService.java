@@ -7,4 +7,6 @@ public interface PathResolverService {
     boolean isPathValid(String directory);
 
     Path getPath(String directory, String userName);
+
+    String getUserMediaUrl(String userName, String maxId);
 }

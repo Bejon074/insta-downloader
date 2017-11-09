@@ -1,6 +1,6 @@
 package com.qminder.instadownloader.controller;
 
-import com.qminder.instadownloader.domain.UserDetail;
+import com.qminder.instadownloader.domain.RealTimeUserDetail;
 import com.qminder.instadownloader.model.DownloadRequest;
 import com.qminder.instadownloader.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class ProfileInfoController {
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ModelAndView getAllProfiles() {
-        List<UserDetail> userDetails = profileService.getProfiles();
+        List<RealTimeUserDetail> userDetails = profileService.getProfiles();
         ModelAndView modelAndView = new ModelAndView("index");
         modelAndView.addObject("userDetails", userDetails);
         modelAndView.addObject("downloadRequest", new DownloadRequest());

@@ -1,5 +1,6 @@
 package com.qminder.instadownloader.domain;
 
+import com.qminder.instadownloader.Enum.DownloadType;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -7,7 +8,7 @@ import java.util.Date;
 
 @Data
 @Entity
-public class UserDetail {
+public class RealTimeUserDetail {
 
     @Id
     @Column
@@ -21,14 +22,12 @@ public class UserDetail {
     private String fullName;
 
     @Column
-    private String lastDownloadedFileId;
-
-    @Column
-    private int totalFileDownloaded;
+    private String maxId;
 
     @Column
     private String fileSavingDirectory;
 
+    @Enumerated(value = EnumType.ORDINAL)
     @Column
-    private Date uploadTime;
+    private DownloadType downloadType;
 }

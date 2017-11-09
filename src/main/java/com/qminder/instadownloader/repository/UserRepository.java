@@ -1,9 +1,9 @@
 package com.qminder.instadownloader.repository;
 
-import com.qminder.instadownloader.domain.UserDetail;
+import com.qminder.instadownloader.domain.RealTimeUserDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<UserDetail, Long> {
+public interface UserRepository extends JpaRepository<RealTimeUserDetail, Long> {
 
-    UserDetail findUserDetailByUserName(String userName);
+    RealTimeUserDetail findUserDetailByUserName(String userName);
 }

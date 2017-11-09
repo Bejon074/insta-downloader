@@ -1,6 +1,6 @@
 package com.qminder.instadownloader.service;
 
-import com.qminder.instadownloader.domain.UserDetail;
+import com.qminder.instadownloader.domain.RealTimeUserDetail;
 import com.qminder.instadownloader.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,18 +15,18 @@ public class ProfileServiceImpl implements ProfileService {
     private UserRepository userRepository;
 
     @Override
-    public List<UserDetail> getProfiles() {
+    public List<RealTimeUserDetail> getProfiles() {
         return userRepository.findAll();
     }
 
     @Override
-    public UserDetail getUserDetailByName(String name) {
+    public RealTimeUserDetail getUserDetailByName(String name) {
         return userRepository.findUserDetailByUserName(name);
     }
 
     @Transactional
     @Override
-    public UserDetail saveUserDetail(UserDetail userDetail) {
+    public RealTimeUserDetail saveUserDetail(RealTimeUserDetail userDetail) {
         return userRepository.saveAndFlush(userDetail);
     }
 }

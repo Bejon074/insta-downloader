@@ -1,5 +1,6 @@
 package com.qminder.instadownloader.service;
 
+import com.qminder.instadownloader.helper.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -37,5 +38,11 @@ public class PathResolverServiceImpl implements PathResolverService {
             }
         }
         return path;
+    }
+
+    @Override
+    public String getUserMediaUrl(String userName, String maxId) {
+        String genericUrl = Constants.mediaURL;
+        return genericUrl.replace("{userName}",userName) + maxId;
     }
 }

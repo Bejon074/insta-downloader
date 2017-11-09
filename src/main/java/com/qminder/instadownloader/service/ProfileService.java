@@ -1,14 +1,14 @@
 package com.qminder.instadownloader.service;
 
-import com.qminder.instadownloader.domain.UserDetail;
+import com.qminder.instadownloader.domain.RealTimeUserDetail;
 
 import java.util.List;
 
 public interface ProfileService {
 
-    List<UserDetail> getProfiles();
+    List<RealTimeUserDetail> getProfiles();
 
-    UserDetail getUserDetailByName(String name);
+    RealTimeUserDetail getUserDetailByName(String name);
 
-    UserDetail saveUserDetail(UserDetail userDetail);
+    RealTimeUserDetail saveUserDetail(RealTimeUserDetail userDetail);
 }
