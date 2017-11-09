@@ -6,4 +6,5 @@ public interface DownloadService {
 
     void startNewDownload(String userName, String directory);
     void handleScheduleDownload(RealTimeUserDetail realTimeUserDetails);
+    boolean isUserExists(String userName);
 }

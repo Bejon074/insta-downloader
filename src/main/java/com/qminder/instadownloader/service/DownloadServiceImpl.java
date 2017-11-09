@@ -158,4 +158,17 @@ public class DownloadServiceImpl implements DownloadService {
             log.error("error {}", ex);
         }
     }
+
+    @Override
+    public boolean isUserExists(String username) {
+        try{
+            String url = pathResolverService.getUserMediaUrl(username, "");
+            restTemplate.getForObject(url, InstagramResponse.class);
+            return true;
+        }catch (Exception ex){
+            log.info("No User Exists with this given username: {}", username);
+            log.error("Exception: {}",ex);
+            return false;
+        }
+    }
 }

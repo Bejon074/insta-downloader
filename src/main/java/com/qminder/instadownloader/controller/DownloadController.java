@@ -36,10 +36,10 @@ public class DownloadController {
         log.info("download request: {}", downloadRequest);
         ModelAndView modelAndView = new ModelAndView("index");
         if (pathResolverService.isPathValid(downloadRequest.getDirectory())) {
-            try {
+            if(downloadService.isUserExists(downloadRequest.getUserName())){
                 downloadService.startNewDownload(downloadRequest.getUserName(), downloadRequest.getDirectory());
                 modelAndView.addObject("successMsg", ReturnedMassage.NewDownloadSuccess);
-            } catch (Exception ex) {
+            }else{
                 modelAndView.addObject("errorMsg", ReturnedMassage.NoAccountFound);
             }
         } else {
