@@ -86,7 +86,6 @@ public class ProfileServiceTest {
             if (savedUserDetail1.getUserName().equals(userDetail.getUserName()) &&
                     savedUserDetail1.getFullName().equals(userDetail.getFullName()) &&
                     savedUserDetail1.getFileSavingDirectory().equals(userDetail.getFileSavingDirectory()) &&
-                    savedUserDetail1.getTotalFileDownloaded() == userDetail.getTotalFileDownloaded() &&
                     savedUserDetail1.getMaxId().equals(userDetail.getMaxId())) {
                 return true;
             }
